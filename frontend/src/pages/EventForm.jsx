@@ -1,227 +1,19 @@
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Cake, CalendarClock, Mail, Phone, User } from "lucide-react";
-// import { useBooking } from "../context/BookingContext";
-// import axios from "axios";
-// import toast from "react-hot-toast";
-
-// const EventForm = () => {
-//   const navigate = useNavigate();
-//   const { setBookingData } = useBooking();
-
-//   const [form, setForm] = useState({
-//     name: "",
-//     email: "",
-//     phone: "",
-//     serviceType: "EVENT",
-//     date: "",
-//     time: "",
-//     noOfPeople: 10,
-//     message: "",
-//   });
-
-//   const today = new Date();
-//   const dateOptions = Array.from({ length: 5 }).map((_, i) => {
-//     const d = new Date();
-//     d.setDate(today.getDate() + i);
-//     const label = i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" });
-//     const sub = d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
-//     const value = d.toISOString().split("T")[0];
-//     return { label, sub, value };
-//   });
-
-//   const eventTimes = ["03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM"];
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleGuestChange = (num) => {
-//     setForm({ ...form, noOfPeople: num });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await axios.post("http://localhost:4000/api/bookings/create", form);
-//       toast.success("✅ OTP sent to your email.");
-//       setBookingData({ ...form, price: res.data.calculatedAmount, bookingId: res.data.bookingId });
-//       await axios.post("http://localhost:4000/api/bookings/send-otp", { email: form.email });
-//       navigate("/otp-verify");
-//     } catch (err) {
-//       console.error(err);
-//       toast.error("❌ Failed to book event. Try again.");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-4">
-//       <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6">
-//         <h2 className="text-2xl font-bold text-center mb-6">🎉 Plan Your Event</h2>
-
-//         {/* Name */}
-//         <div className="mb-4">
-//           <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-//             <User className="w-5 h-5 text-gray-400" />
-//             <input
-//               type="text"
-//               name="name"
-//               placeholder="Full Name"
-//               value={form.name}
-//               onChange={handleChange}
-//               required
-//               className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Email */}
-//         <div className="mb-4">
-//           <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-//             <Mail className="w-5 h-5 text-gray-400" />
-//             <input
-//               type="email"
-//               name="email"
-//               placeholder="Email"
-//               value={form.email}
-//               onChange={handleChange}
-//               required
-//               className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Phone */}
-//         <div className="mb-4">
-//           <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-//             <Phone className="w-5 h-5 text-gray-400" />
-//             <input
-//               type="tel"
-//               name="phone"
-//               placeholder="Phone Number"
-//               value={form.phone}
-//               onChange={handleChange}
-//               required
-//               className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Date Picker */}
-//         <div className="mb-6">
-//           <h3 className="font-semibold text-gray-800 mb-3">Select Event Date</h3>
-//           <div className="flex gap-3 overflow-x-auto pb-1">
-//             {dateOptions.map((date) => (
-//               <button
-//                 key={date.value}
-//                 type="button"
-//                 onClick={() => setForm({ ...form, date: date.value })}
-//                 className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 text-center min-w-20 transition-all ${
-//                   form.date === date.value
-//                     ? "bg-orange-100 border-orange-300 text-orange-600"
-//                     : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-//                 }`}
-//               >
-//                 <div className="font-medium text-sm">{date.label}</div>
-//                 <div className="text-xs mt-1">{date.sub}</div>
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* Time Slots */}
-//         <div className="mb-6">
-//           <h3 className="font-semibold text-gray-800 mb-3">Choose Event Time</h3>
-//           <div className="grid grid-cols-3 gap-2">
-//             {eventTimes.map((time) => (
-//               <button
-//                 key={time}
-//                 onClick={() => setForm({ ...form, time })}
-//                 className={`py-2 px-2 rounded-xl text-sm font-medium border-2 transition ${
-//                   form.time === time
-//                     ? "bg-orange-100 border-orange-300 text-orange-600"
-//                     : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-//                 }`}
-//               >
-//                 {time}
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* Guest Count */}
-//         <div className="mb-6">
-//           <h3 className="font-semibold text-gray-800 mb-3">Guests Count</h3>
-//           <div className="flex gap-3">
-//             {[10, 20, 30, 40, 50].map((num) => (
-//               <button
-//                 key={num}
-//                 onClick={() => handleGuestChange(num)}
-//                 className={`w-14 h-12 rounded-xl border-2 font-medium transition-colors ${
-//                   form.noOfPeople === num
-//                     ? "bg-orange-100 border-orange-300 text-orange-600"
-//                     : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-//                 }`}
-//               >
-//                 {num}
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* Message */}
-//         <div className="mb-6">
-//           <textarea
-//             name="message"
-//             placeholder="Optional message (e.g. Birthday, Anniversary...)"
-//             value={form.message}
-//             onChange={handleChange}
-//             className="w-full p-4 rounded-xl border-2 border-gray-200 bg-gray-50 placeholder-gray-400 focus:border-orange-300 resize-none"
-//             rows={3}
-//           />
-//         </div>
-
-//         {/* Submit */}
-//         <button
-//           type="submit"
-//           onClick={handleSubmit}
-//           disabled={!form.name || !form.email || !form.phone || !form.date || !form.time}
-//           className={`w-full py-3 rounded-xl font-semibold transition-colors ${
-//             form.name && form.email && form.phone && form.date && form.time
-//               ? "bg-orange-500 text-white hover:bg-orange-600"
-//               : "bg-gray-300 text-white cursor-not-allowed"
-//           }`}
-//         >
-//           Continue to OTP ➜
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default EventForm;
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Cake,
-  Gift,
-  Mail,
-  Phone,
-  User,
-  Music,
-  CalendarClock,
-} from "lucide-react";
 import { useBooking } from "../context/BookingContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {
+  Cake, Gift, Mail, Phone, User, Music, CalendarClock,
+  CheckCircle, ChevronRight, PartyPopper, Sparkles,
+  Calendar, Clock, Users, MessageSquare, ArrowRight, ShieldCheck
+} from "lucide-react";
+
+// Image Imports
 import imgP from "../assets/img4.jpg";
 import imgC from "../assets/img5.jpg";
 import imgA from "../assets/img6.jpg";
-import imgH from "../assets/img7.jpg";
 import imgBB from "../assets/imgBB.jpg";
-import imgPo from "../assets/img41.jpg";
-
 
 const EventForm = () => {
   const navigate = useNavigate();
@@ -240,34 +32,31 @@ const EventForm = () => {
     serviceType: "EVENT",
   });
 
+  // Date Logic
   const today = new Date();
-  const dateOptions = Array.from({ length: 5 }).map((_, i) => {
+  const dateOptions = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setDate(today.getDate() + i);
-    const label =
-      i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" });
-    const sub = d.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-    });
+    const label = i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" });
+    const dayNum = d.getDate();
+    const month = d.toLocaleDateString("en-US", { month: "short" });
     const value = d.toISOString().split("T")[0];
-    return { label, sub, value };
+    return { label, dayNum, month, value };
   });
 
-  const eventTimes = [
-    "03:00 PM",
-    "04:00 PM",
-    "05:00 PM",
-    "06:00 PM",
-    "07:00 PM",
-    "08:00 PM",
-    "09:00 PM",
-  ];
+  const eventTimes = ["03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM"];
 
   const addOnOptions = [
-    { label: "DJ", icon: Music },
-    { label: "Cake", icon: Cake },
-    { label: "Decor", icon: Gift },
+    { label: "DJ Night", icon: Music },
+    { label: "Custom Cake", icon: Cake },
+    { label: "Premium Decor", icon: Gift },
+  ];
+
+  const eventTypes = [
+    { type: "Birthday", img: imgBB },
+    { type: "Anniversary", img: imgA },
+    { type: "Farewell", img: imgC },
+    { type: "Engagement", img: imgP },
   ];
 
   const toggleAddOn = (addon) => {
@@ -283,24 +72,13 @@ const EventForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Submit handler inside EventForm.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = { ...form };
+      const res = await axios.post("http://localhost:4000/api/events/request", payload);
+      await axios.post("http://localhost:4000/api/bookings/send-otp", { email: form.email });
 
-      // ✅ Step 1: Create event request and get bookingId + price
-      const res = await axios.post(
-        "http://localhost:4000/api/events/request",
-        payload
-      );
-
-      // ✅ Step 2: Send OTP
-      await axios.post("http://localhost:4000/api/bookings/send-otp", {
-        email: form.email,
-      });
-
-      // ✅ Step 3: Save bookingData to context
       setBookingData({
         ...form,
         bookingId: res.data.bookingId,
@@ -311,259 +89,297 @@ const EventForm = () => {
         serviceType: "EVENT",
       });
 
-      // ✅ Step 4: Navigate to OTP verify
+      toast.success("🎉 Event request submitted!");
       navigate("/otp-verify");
     } catch (err) {
       console.error(err);
-      toast.error("❌ Failed to submit event request. Try again.");
+      toast.error("❌ Failed to submit request.");
     }
   };
 
+  const isFormValid = form.name && form.email && form.phone && form.eventType && form.preferredDate && form.preferredTime;
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 mt-5">
-      <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          🎊 Event Reservation
-        </h2>
+    <div className="min-h-screen bg-[#F8F9FA] pb-24 md:pb-10 pt-4 md:pt-10 px-4 md:px-8 font-sans">
+      
+      {/* Header (Desktop) */}
+      <div className="max-w-6xl mx-auto mb-8 hidden md:block">
+        <h1 className="text-3xl font-bold text-gray-900">Plan your Event</h1>
+        <div className="flex items-center gap-2 text-gray-500 mt-2 text-sm">
+          <span>Home</span> <ChevronRight size={14}/> <span>Celebrations</span> <ChevronRight size={14}/> <span className="text-orange-600 font-medium">Book Venue</span>
+        </div>
+      </div>
 
-        {/* Name */}
-        <Input
-          icon={User}
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Full Name"
-        />
-        <Input
-          icon={Mail}
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          placeholder="Email"
-        />
-        <Input
-          icon={Phone}
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          placeholder="Phone Number"
-        />
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* ================= LEFT COLUMN: THE FORM ================= */}
+        <div className="lg:col-span-2 space-y-6">
 
-        {/* Event Type */}
+          {/* 1. Event Type Selection */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600"><PartyPopper size={20}/></div>
+              What are we celebrating?
+            </h2>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {eventTypes.map(({ type, img }) => (
+                <div
+                  key={type}
+                  onClick={() => setForm({ ...form, eventType: type })}
+                  className={`relative h-36 md:h-44 rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 ${
+                    form.eventType === type 
+                      ? "ring-[3px] ring-orange-500 ring-offset-2 shadow-xl" 
+                      : "hover:shadow-lg opacity-90 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt={type} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4 transition-all ${form.eventType === type ? "opacity-100" : "opacity-80"}`}>
+                    <div className="flex justify-between items-end">
+                       <span className="text-white font-bold text-lg md:text-xl">{type}</span>
+                       {form.eventType === type && <CheckCircle className="text-orange-400 fill-white" size={24}/>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        {/* Event Type Selection with Images */}
-        {/* <div className="mb-6">
-          <h3 className="font-semibold text-gray-800 mb-3">
-            Choose Event Type
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { type: "Birthday", img: {imgH} },
-              { type: "Anniversary", img: {imgA}},
-              { type: "Farewell", img: {imgC}},
-              { type: "Engagement", img: {imgP} },
-            ].map(({ type, img }) => (
-              <div
-                key={type}
-                onClick={() => setForm({ ...form, eventType: type })}
-                className={`cursor-pointer p-3 rounded-xl border-2 text-center transition ${
-                  form.eventType === type
-                    ? "border-orange-400 bg-orange-50 text-orange-600"
-                    : "border-gray-200 bg-gray-50 hover:border-gray-300 text-gray-600"
-                }`}
-              >
-                <img
-                  src={img}
-                  alt={type}
-                  className="mx-auto mb-2 w-16 h-16 object-contain"
-                />
-                <div className="font-medium">{type}</div>
+          {/* 2. Date & Time */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600"><CalendarClock size={20}/></div>
+              When is the party?
+            </h2>
+
+            {/* Date Scroll */}
+            <div className="mb-6">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Preferred Date</label>
+              <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+                {dateOptions.map((date) => (
+                  <button
+                    key={date.value}
+                    onClick={() => setForm({ ...form, preferredDate: date.value })}
+                    className={`relative min-w-[5.5rem] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                      form.preferredDate === date.value
+                        ? "bg-gray-900 border-gray-900 text-white shadow-lg transform -translate-y-1"
+                        : "bg-white border-gray-200 text-gray-600 hover:border-orange-400 hover:bg-orange-50"
+                    }`}
+                  >
+                    <span className="text-xs font-medium opacity-80">{date.label}</span>
+                    <span className="text-2xl font-bold">{date.dayNum}</span>
+                    <span className="text-xs font-medium opacity-80">{date.month}</span>
+                  </button>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Time Grid */}
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Start Time</label>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
+                {eventTimes.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setForm({ ...form, preferredTime: time })}
+                    className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all ${
+                      form.preferredTime === time
+                        ? "bg-orange-500 border-orange-500 text-white shadow-md"
+                        : "bg-gray-50 border-gray-100 text-gray-600 hover:border-orange-300 hover:bg-white"
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-        </div> */}
-        <div className="mb-6">
-  <h3 className="font-semibold text-gray-800 mb-3">
-    Choose Event Type
-  </h3>
-  <div className="grid grid-cols-2 gap-4">
-    {[
-      { type: "Birthday", img: imgBB},
-      { type: "Anniversary", img: imgA },
-      { type: "Farewell", img: imgC },
-      { type: "Engagement", img: imgP },
-    ].map(({ type, img }) => (
-      <div
-        key={type}
-        onClick={() => setForm({ ...form, eventType: type })}
-        className={`relative cursor-pointer rounded-xl border-2 overflow-hidden h-40 transition ${
-          form.eventType === type
-            ? "border-orange-400"
-            : "border-gray-200 hover:border-gray-300"
-        }`}
-      >
-        <img
-          src={img}
-          alt={type}
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
-        />
-        <div className="absolute bottom-0 left-0 w-full p-2 text-center bg-black/40 backdrop-blur-sm z-10">
-          <div
-            className={`text-sm font-medium ${
-              form.eventType === type ? "text-orange-200" : "text-white"
-            }`}
-          >
-            {type}
+
+          {/* 3. Guests & Add-ons */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600"><Gift size={20}/></div>
+              Customize Experience
+            </h2>
+
+            {/* Guests */}
+            <div className="mb-8">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Expected Guests</label>
+              <div className="flex flex-wrap gap-3">
+                {[10, 20, 30, 40, 50, 100].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setForm({ ...form, noOfGuests: num })}
+                    className={`h-12 px-5 rounded-xl text-sm font-bold flex items-center justify-center transition-all ${
+                      form.noOfGuests === num
+                        ? "bg-orange-500 text-white shadow-md ring-2 ring-orange-500 ring-offset-2"
+                        : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {num} Guests
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Add Ons */}
+            <div>
+               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Special Add-ons</label>
+               <div className="grid grid-cols-3 gap-3">
+                  {addOnOptions.map(({ label, icon: Icon }) => (
+                    <button
+                      key={label}
+                      onClick={() => toggleAddOn(label)}
+                      className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                        form.addOns.includes(label)
+                          ? "border-orange-500 bg-orange-50 text-orange-700"
+                          : "border-gray-100 bg-white text-gray-500 hover:border-gray-300"
+                      }`}
+                    >
+                      <Icon className={`w-6 h-6 mb-2 ${form.addOns.includes(label) ? "text-orange-600" : "text-gray-400"}`} />
+                      <span className="text-xs md:text-sm font-bold">{label}</span>
+                    </button>
+                  ))}
+               </div>
+            </div>
+          </div>
+
+          {/* 4. Details */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600"><User size={20}/></div>
+              Contact Details
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <Input icon={User} name="name" placeholder="Full Name" value={form.name} onChange={handleChange} />
+               <Input icon={Phone} name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} />
+               <div className="md:col-span-2">
+                 <Input icon={Mail} name="email" placeholder="Email Address" value={form.email} onChange={handleChange} />
+               </div>
+               <div className="md:col-span-2">
+                 <div className="flex gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 focus-within:border-orange-300 focus-within:bg-white transition-all">
+                    <MessageSquare className="w-5 h-5 text-gray-400 mt-1" />
+                    <textarea
+                      name="message"
+                      placeholder="Any special request? (e.g. Pure Veg food, Balloon color theme...)"
+                      value={form.message}
+                      onChange={handleChange}
+                      className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500 min-h-[80px] resize-none"
+                    />
+                 </div>
+               </div>
+            </div>
           </div>
         </div>
+
+        {/* ================= RIGHT COLUMN: STICKY SUMMARY (DESKTOP) ================= */}
+        <div className="hidden lg:block lg:col-span-1">
+          <div className="sticky top-6">
+            <div className="bg-white rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
+               {/* Summary Header */}
+               <div className="bg-gray-900 p-6 text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500 rounded-full blur-3xl opacity-20 -translate-y-10 translate-x-10"></div>
+                  <h3 className="text-lg font-bold relative z-10">Event Summary</h3>
+                  <p className="text-gray-400 text-sm relative z-10">Grand Celebration</p>
+               </div>
+               
+               {/* Summary Body */}
+               <div className="p-6 space-y-6">
+                  {/* Event Type */}
+                  <div className="flex items-start gap-4">
+                     <div className="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+                        <Sparkles size={18} />
+                     </div>
+                     <div>
+                        <p className="text-xs text-gray-500 uppercase font-bold">Occasion</p>
+                        <p className="text-gray-900 font-bold text-lg">{form.eventType || "Select Type"}</p>
+                        <p className="text-gray-600 text-sm">{form.noOfGuests} Guests</p>
+                     </div>
+                  </div>
+
+                  {/* Date & Time */}
+                  <div className="flex items-start gap-4">
+                     <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                        <Calendar size={18} />
+                     </div>
+                     <div>
+                        <p className="text-xs text-gray-500 uppercase font-bold">Schedule</p>
+                        <p className="text-gray-900 font-bold">{form.preferredDate ? new Date(form.preferredDate).toDateString() : "Select Date"}</p>
+                        <p className="text-gray-600 text-sm">{form.preferredTime || "--:--"}</p>
+                     </div>
+                  </div>
+
+                   {/* Addons List */}
+                   {form.addOns.length > 0 && (
+                     <div className="bg-gray-50 p-4 rounded-xl">
+                        <p className="text-xs text-gray-500 uppercase font-bold mb-2">Extras Included</p>
+                        <div className="flex flex-wrap gap-2">
+                           {form.addOns.map(addon => (
+                             <span key={addon} className="text-xs font-semibold bg-white border border-gray-200 px-2 py-1 rounded-md text-gray-700">
+                               + {addon}
+                             </span>
+                           ))}
+                        </div>
+                     </div>
+                   )}
+
+                  <div className="border-t border-dashed border-gray-200 my-2"></div>
+
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!isFormValid}
+                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 ${
+                      isFormValid 
+                      ? "bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-lg hover:shadow-xl" 
+                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    Request Quote
+                  </button>
+
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                     <ShieldCheck size={14} /> Best Price Guaranteed
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    ))}
-  </div>
-</div>
 
-
-        {/* Date Picker */}
-        <div className="mb-6">
-          <label className="block mb-2 font-semibold text-gray-800">
-            Preferred Date
-          </label>
-          <div className="flex gap-3 overflow-x-auto pb-1">
-            {dateOptions.map((date) => (
-              <button
-                key={date.value}
-                type="button"
-                onClick={() => setForm({ ...form, preferredDate: date.value })}
-                className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 text-center min-w-20 transition-all ${
-                  form.preferredDate === date.value
-                    ? "bg-orange-100 border-orange-300 text-orange-600"
-                    : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                <div className="font-medium text-sm">{date.label}</div>
-                <div className="text-xs mt-1">{date.sub}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Time Picker */}
-        <div className="mb-6">
-          <label className="block mb-2 font-semibold text-gray-800">
-            Preferred Time
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {eventTimes.map((time) => (
-              <button
-                key={time}
-                type="button"
-                onClick={() => setForm({ ...form, preferredTime: time })}
-                className={`py-2 px-2 rounded-xl text-sm font-medium border-2 transition ${
-                  form.preferredTime === time
-                    ? "bg-orange-100 border-orange-300 text-orange-600"
-                    : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                {time}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Guests */}
-        <div className="mb-6">
-          <label className="block mb-2 font-semibold text-gray-800">
-            Number of Guests
-          </label>
-          <div className="flex gap-3">
-            {[10, 20, 30, 40, 50, 100].map((num) => (
-              <button
-                key={num}
-                onClick={() => setForm({ ...form, noOfGuests: num })}
-                className={`w-14 h-12 rounded-xl border-2 font-medium transition-colors ${
-                  form.noOfGuests === num
-                    ? "bg-orange-100 border-orange-300 text-orange-600"
-                    : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Add Ons */}
-        <div className="mb-6">
-          <label className="block mb-2 font-semibold text-gray-800">
-            Add Ons
-          </label>
-          <div className="flex gap-4">
-            {addOnOptions.map(({ label, icon: Icon }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => toggleAddOn(label)}
-                className={`flex-1 border-2 rounded-xl p-3 text-center transition ${
-                  form.addOns.includes(label)
-                    ? "border-orange-400 bg-orange-50 text-orange-600"
-                    : "border-gray-200 bg-gray-50 hover:border-gray-300 text-gray-600"
-                }`}
-              >
-                <Icon className="mx-auto mb-1 w-6 h-6" />
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Message */}
-        <textarea
-          name="message"
-          placeholder="Event note (optional)"
-          value={form.message}
-          onChange={handleChange}
-          className="w-full p-4 rounded-xl border-2 border-gray-200 bg-gray-50 placeholder-gray-400 focus:border-orange-300 resize-none mb-4"
-          rows={3}
-        />
-
-        {/* Submit */}
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          disabled={
-            !form.name ||
-            !form.email ||
-            !form.phone ||
-            !form.eventType ||
-            !form.preferredDate ||
-            !form.preferredTime
-          }
-          className={`w-full py-3 rounded-xl font-semibold transition-colors ${
-            form.name &&
-            form.email &&
-            form.phone &&
-            form.eventType &&
-            form.preferredDate &&
-            form.preferredTime
-              ? "bg-orange-500 text-white hover:bg-orange-600"
-              : "bg-gray-300 text-white cursor-not-allowed"
-          }`}
-        >
-          Continue to OTP ➜
-        </button>
+      {/* ================= MOBILE STICKY FOOTER ================= */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 z-50 shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)]">
+         <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+               <span className="text-xs text-gray-500 font-bold uppercase">Event</span>
+               <span className="text-lg font-bold text-gray-900">{form.eventType || "Plan Event"}</span>
+            </div>
+            <button
+              onClick={handleSubmit}
+              disabled={!isFormValid}
+              className={`flex-1 h-12 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors ${
+                isFormValid ? "bg-orange-600 text-white shadow-lg shadow-orange-500/30" : "bg-gray-200 text-gray-400"
+              }`}
+            >
+              Request Quote <ArrowRight size={18} />
+            </button>
+         </div>
       </div>
+
     </div>
   );
 };
 
-// Reusable Input Component
+// Reusable Internal Input
 const Input = ({ icon: Icon, ...props }) => (
-  <div className="mb-4">
-    <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-      <Icon className="w-5 h-5 text-gray-400" />
+  <div className="relative">
+    <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus-within:bg-white focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/10 transition-all">
+      <Icon className="w-5 h-5 text-gray-400 mr-3" />
       <input
         {...props}
         required
-        className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
+        className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500 font-medium"
       />
     </div>
   </div>
