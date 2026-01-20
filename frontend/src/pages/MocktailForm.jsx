@@ -1,9 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { User, Mail, Phone,Martini , Flame } from "lucide-react";
 import { useBooking } from "../context/BookingContext";
+import { 
+  User, Mail, Phone, Calendar, Clock, Users, 
+  CheckCircle, ChevronRight, Flame, Wine, 
+  PartyPopper, ShieldCheck, ArrowRight 
+} from "lucide-react";
 
 const MocktailForm = () => {
   const navigate = useNavigate();
@@ -13,27 +17,30 @@ const MocktailForm = () => {
     name: "",
     email: "",
     phone: "",
-    serviceType: "",
-    spaceType: "",
+    serviceType: "MOCKTAIL",
+    spaceType: "", // mocktail | hookah | both
     date: "",
     time: "",
     noOfPeople: 2,
   });
 
+  // Static Times for Lounge
   const loungeTimes = [
     "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM",
     "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM",
     "08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM",
   ];
 
+  // Date Logic
   const today = new Date();
-  const dateOptions = Array.from({ length: 5 }).map((_, i) => {
+  const dateOptions = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setDate(today.getDate() + i);
     const label = i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "short" });
-    const sub = d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+    const dayNum = d.getDate();
+    const month = d.toLocaleDateString("en-US", { month: "short" });
     const value = d.toISOString().split("T")[0];
-    return { label, sub, value };
+    return { label, dayNum, month, value };
   });
 
   const handleChange = (e) => {
@@ -48,7 +55,7 @@ const MocktailForm = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:4000/api/bookings/create", form);
-      toast.success("✅ OTP sent to your email.");
+      toast.success("✅ Reservation request sent!");
       setBookingData({ ...form, price: res.data.calculatedAmount, bookingId: res.data.bookingId });
       await axios.post("http://localhost:4000/api/bookings/send-otp", { email: form.email });
       navigate("/otp-verify");
@@ -58,194 +65,269 @@ const MocktailForm = () => {
     }
   };
 
+  const isFormValid = form.name && form.email && form.phone && form.spaceType && form.date && form.time;
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 mt-8">
-      <div className="max-w-md mx-auto bg-white rounded-2xl shadow p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">🍹 Mocktail / Hookah Booking</h2>
-
-        {/* Name */}
-        <div className="mb-4">
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-            <User className="w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-            />
-          </div>
+    <div className="min-h-screen bg-[#F8F9FA] pb-24 md:pb-10 pt-4 md:pt-10 px-4 md:px-8 font-sans">
+      
+      {/* Header (Desktop) */}
+      <div className="max-w-6xl mx-auto mb-8 hidden md:block">
+        <h1 className="text-3xl font-bold text-gray-900">Lounge Reservation</h1>
+        <div className="flex items-center gap-2 text-gray-500 mt-2 text-sm">
+          <span>Home</span> <ChevronRight size={14}/> <span>Lounge</span> <ChevronRight size={14}/> <span className="text-orange-600 font-medium">Book Slot</span>
         </div>
-
-        {/* Email */}
-        <div className="mb-4">
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-            <Mail className="w-5 h-5 text-gray-400" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-            />
-          </div>
-        </div>
-
-        {/* Phone */}
-        <div className="mb-4">
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus-within:border-orange-300">
-            <Phone className="w-5 h-5 text-gray-400" />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-              required
-              className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-500"
-            />
-          </div>
-        </div>
-
-        {/* Date */}
-        <div className="mb-6">
-          <h3 className="font-semibold text-gray-800 mb-3">Choose Date</h3>
-          <div className="flex gap-3 overflow-x-auto pb-1">
-            {dateOptions.map((date) => (
-              <button
-                key={date.value}
-                type="button"
-                onClick={() => setForm({ ...form, date: date.value })}
-                className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 text-center min-w-20 transition-all ${
-                  form.date === date.value
-                    ? "bg-orange-100 border-orange-300 text-orange-600"
-                    : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                <div className="font-medium text-sm">{date.label}</div>
-                <div className="text-xs mt-1">{date.sub}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Lounge type */}
-        {/* <div className="mb-6">
-          <h3 className="font-semibold text-gray-800 mb-3">Choose Lounge Type</h3>
-          <div className="flex gap-4">
-            {[
-              { label: "Mocktail", icon: Martini  },
-              { label: "Hookah", icon: Flame },
-              { label: "Both", icon: () => <Martini  className="w-5 h-5 inline" /> },
-            ].map(({ label, icon: Icon }) => (
-              <button
-                key={label}
-                onClick={() => setForm({ ...form, spaceType: label.toLowerCase() })}
-                className={`flex-1 p-4 border-2 rounded-xl text-center transition font-medium ${
-                  form.spaceType === label.toLowerCase()
-                    ? "border-orange-400 bg-orange-50 text-orange-600"
-                    : "border-gray-200 bg-gray-50 hover:border-gray-300 text-gray-600"
-                }`}
-              >
-                <Icon className="mx-auto mb-1 w-6 h-6" />
-                {label}
-              </button>
-            ))}
-          </div>
-        </div> */}
-        {/* Lounge type */}
-<div className="mb-6">
-  <h3 className="font-semibold text-gray-800 mb-3">Choose Lounge Type</h3>
-  <div className="flex gap-4">
-    {[
-      { label: "Mocktail", icon: Martini },
-      { label: "Hookah", icon: Flame },
-      {
-        label: "Both",
-        icon: () => <Martini className="w-5 h-5 inline" />,
-      },
-    ].map(({ label, icon: Icon }) => (
-      <button
-        key={label}
-        onClick={() =>
-          setForm({
-            ...form,
-            serviceType: "MOCKTAIL", // 🔥 Ensures backend logic is matched
-            spaceType: label.toLowerCase(), // mocktail | hookah | both
-          })
-        }
-        className={`flex-1 p-4 border-2 rounded-xl text-center transition font-medium ${
-          form.spaceType === label.toLowerCase()
-            ? "border-orange-400 bg-orange-50 text-orange-600"
-            : "border-gray-200 bg-gray-50 hover:border-gray-300 text-gray-600"
-        }`}
-      >
-        <Icon className="mx-auto mb-1 w-6 h-6" />
-        {label}
-      </button>
-    ))}
-  </div>
-</div>
-
-
-        {/* Guests */}
-        <div className="bg-white rounded-2xl p-6 mb-4 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Number of guest(s)</h2>
-          <div className="flex gap-3">
-            {[1, 2, 3, 4, 5].map((num) => (
-              <button
-                key={num}
-                onClick={() => handleGuestChange(num)}
-                className={`w-12 h-12 rounded-xl border-2 font-medium transition-colors ${
-                  form.noOfPeople === num
-                    ? "bg-orange-100 border-orange-300 text-orange-600"
-                    : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Time */}
-        <div className="mb-6">
-          <h3 className="font-semibold text-gray-800 mb-3">Select Time</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {loungeTimes.map((slot) => (
-              <button
-                key={slot}
-                onClick={() => setForm({ ...form, time: slot })}
-                className={`py-2 px-2 rounded-xl text-sm font-medium border-2 transition-colors ${
-                  form.time === slot
-                    ? "bg-orange-100 border-orange-300 text-orange-600"
-                    : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                {slot}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          disabled={!form.name || !form.email || !form.phone || !form.spaceType || !form.date || !form.time}
-          className={`w-full py-3 rounded-xl font-semibold transition-colors ${
-            form.name && form.email && form.phone && form.spaceType && form.date && form.time
-              ? "bg-orange-500 text-white hover:bg-orange-600"
-              : "bg-gray-300 text-white cursor-not-allowed"
-          }`}
-        >
-          Continue to OTP ➜
-        </button>
       </div>
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* ================= LEFT COLUMN: THE FORM ================= */}
+        <div className="lg:col-span-2 space-y-6">
+
+          {/* 1. Vibe Selection (Service Type) */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600"><Wine size={20}/></div>
+              Choose your Vibe
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { label: "Mocktail", value: "mocktail", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400&auto=format&fit=crop", icon: Wine },
+                { label: "Hookah", value: "hookah", img: "https://images.unsplash.com/photo-1574238752695-675b86d49267?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", icon: Flame },
+                { label: "Both", value: "both", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=400&auto=format&fit=crop", icon: PartyPopper },
+              ].map((item) => (
+                <div
+                  key={item.value}
+                  onClick={() => setForm({ ...form, spaceType: item.value })}
+                  className={`relative h-40 rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 ${
+                    form.spaceType === item.value 
+                      ? "ring-[3px] ring-orange-500 ring-offset-2 shadow-xl" 
+                      : "hover:shadow-lg opacity-90 hover:opacity-100"
+                  }`}
+                >
+                  <img src={item.img} alt={item.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-4 transition-all ${form.spaceType === item.value ? "opacity-100" : "opacity-80"}`}>
+                    <div className="flex justify-between items-end">
+                       <div className="flex items-center gap-2">
+                         <item.icon className="text-orange-400 w-5 h-5" />
+                         <span className="text-white font-bold text-lg">{item.label}</span>
+                       </div>
+                       {form.spaceType === item.value && <CheckCircle className="text-orange-400 fill-white" size={24}/>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* 2. Date & Time Selection */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600"><Calendar size={20}/></div>
+              Date & Time
+            </h2>
+
+            {/* Date Scroll */}
+            <div className="mb-6">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Select Date</label>
+              <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+                {dateOptions.map((date) => (
+                  <button
+                    key={date.value}
+                    onClick={() => setForm({ ...form, date: date.value })}
+                    className={`relative min-w-[5.5rem] h-24 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
+                      form.date === date.value
+                        ? "bg-gray-900 border-gray-900 text-white shadow-lg transform -translate-y-1"
+                        : "bg-white border-gray-200 text-gray-600 hover:border-orange-400 hover:bg-orange-50"
+                    }`}
+                  >
+                    <span className="text-xs font-medium opacity-80">{date.label}</span>
+                    <span className="text-2xl font-bold">{date.dayNum}</span>
+                    <span className="text-xs font-medium opacity-80">{date.month}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Time Grid */}
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Select Slot</label>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                {loungeTimes.map((slot) => (
+                  <button
+                    key={slot}
+                    onClick={() => setForm({ ...form, time: slot })}
+                    className={`py-2 px-1 rounded-xl text-xs md:text-sm font-medium border transition-all ${
+                      form.time === slot
+                        ? "bg-orange-500 border-orange-500 text-white shadow-md"
+                        : "bg-gray-50 border-gray-100 text-gray-600 hover:border-orange-300 hover:bg-white"
+                    }`}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Guests & Contact */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100">
+             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600"><Users size={20}/></div>
+              Guests & Details
+            </h2>
+
+            {/* Guests */}
+            <div className="mb-8">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 block">Total Guests</label>
+              <div className="flex flex-wrap gap-3">
+                {[1, 2, 3, 4, 5, 6, 8, 10].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => handleGuestChange(num)}
+                    className={`w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center transition-all ${
+                      form.noOfPeople === num
+                        ? "bg-orange-500 text-white shadow-md ring-2 ring-orange-500 ring-offset-2"
+                        : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="relative group">
+                 <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus-within:bg-white focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/10 transition-all">
+                    <User size={18} className="text-gray-400 mr-3"/>
+                    <input
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      placeholder="Full Name"
+                      className="bg-transparent border-none outline-none w-full text-gray-800 font-medium placeholder-gray-400"
+                      required
+                    />
+                 </div>
+               </div>
+
+               <div className="relative group">
+                 <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus-within:bg-white focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/10 transition-all">
+                    <Phone size={18} className="text-gray-400 mr-3"/>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      placeholder="Phone Number"
+                      className="bg-transparent border-none outline-none w-full text-gray-800 font-medium placeholder-gray-400"
+                      required
+                    />
+                 </div>
+               </div>
+
+               <div className="relative group md:col-span-2">
+                 <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus-within:bg-white focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/10 transition-all">
+                    <Mail size={18} className="text-gray-400 mr-3"/>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      placeholder="Email Address"
+                      className="bg-transparent border-none outline-none w-full text-gray-800 font-medium placeholder-gray-400"
+                      required
+                    />
+                 </div>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ================= RIGHT COLUMN: STICKY SUMMARY (DESKTOP) ================= */}
+        <div className="hidden lg:block lg:col-span-1">
+          <div className="sticky top-6">
+            <div className="bg-white rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
+               {/* Summary Header */}
+               <div className="bg-gray-900 p-6 text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500 rounded-full blur-2xl opacity-20 -translate-y-8 translate-x-8"></div>
+                  <h3 className="text-lg font-bold relative z-10">Booking Summary</h3>
+                  <p className="text-gray-400 text-sm relative z-10">Lounge & Bar Access</p>
+               </div>
+               
+               {/* Summary Body */}
+               <div className="p-6 space-y-6">
+                  {/* Date & Time Row */}
+                  <div className="flex items-start gap-4">
+                     <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                        <Clock size={18} />
+                     </div>
+                     <div>
+                        <p className="text-xs text-gray-500 uppercase font-bold">Time Slot</p>
+                        <p className="text-gray-900 font-bold">{form.date ? new Date(form.date).toDateString() : "Select Date"}</p>
+                        <p className="text-gray-600 text-sm">{form.time || "--:--"}</p>
+                     </div>
+                  </div>
+
+                  {/* Vibe Row */}
+                  <div className="flex items-start gap-4">
+                     <div className="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                        <Flame size={18} />
+                     </div>
+                     <div>
+                        <p className="text-xs text-gray-500 uppercase font-bold">Experience</p>
+                        <p className="text-gray-900 font-bold capitalize">{form.spaceType || "Not Selected"}</p>
+                        <p className="text-gray-600 text-sm">{form.noOfPeople} Guests</p>
+                     </div>
+                  </div>
+
+                  <div className="border-t border-dashed border-gray-200 my-2"></div>
+
+                  {/* Submit Button (Desktop) */}
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!isFormValid}
+                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 ${
+                      isFormValid 
+                      ? "bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-lg hover:shadow-xl" 
+                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    Confirm Booking
+                  </button>
+
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-400 bg-gray-50 py-2 rounded-lg">
+                     <ShieldCheck size={14} /> Instant Confirmation
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ================= MOBILE STICKY FOOTER ================= */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 z-50 shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)]">
+         <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+               <span className="text-xs text-gray-500 font-bold uppercase">Selection</span>
+               <span className="text-lg font-bold text-gray-900 capitalize">{form.spaceType || "Choose Type"}</span>
+            </div>
+            <button
+              onClick={handleSubmit}
+              disabled={!isFormValid}
+              className={`flex-1 h-12 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors ${
+                isFormValid ? "bg-orange-600 text-white shadow-lg shadow-orange-500/30" : "bg-gray-200 text-gray-400"
+              }`}
+            >
+              Book Now <ArrowRight size={18} />
+            </button>
+         </div>
+      </div>
+
     </div>
   );
 };
