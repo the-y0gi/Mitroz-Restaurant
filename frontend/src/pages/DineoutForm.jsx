@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "../context/BookingContext";
-import axios from "axios";
+import axios from "../api/axios";
 import { toast } from "react-toastify";
 import img1 from "../assets/premium.jpg";
 import imgOutdoor from "../assets/nightBtn.jpg";
@@ -52,12 +52,12 @@ const DineoutForm = () => {
     try {
       const price = form.noOfPeople * 300;
       const res = await axios.post(
-        "http://localhost:4000/api/bookings/create",
+        "/bookings/create",
         { ...form, price }
       );
       toast.success("Reservation Initiated!");
       setBookingData({ ...form, price, bookingId: res.data.bookingId });
-      await axios.post("http://localhost:4000/api/bookings/send-otp", {
+      await axios.post("/bookings/send-otp", {
         email: form.email,
       });
       navigate("/otp-verify");

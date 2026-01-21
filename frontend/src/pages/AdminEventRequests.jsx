@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import toast from "react-hot-toast";
 import { ShieldCheck, Loader2 } from "lucide-react";
 
@@ -11,7 +11,7 @@ const AdminEventRequests = () => {
 
   const fetchEventRequests = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/admin/all", {
+      const res = await axios.get("/admin/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents(res.data);
@@ -24,10 +24,10 @@ const AdminEventRequests = () => {
 
   const handleConfirm = async (id) => {
     try {
-      await axios.put(`http://localhost:4000/api/admin/confirm/${id}`, {}, {
+      await axios.put(`/admin/confirm/${id}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success("✅ Event confirmed");
+      toast.success("Event confirmed");
       fetchEventRequests();
     } catch (err) {
       toast.error("❌ Failed to confirm event");

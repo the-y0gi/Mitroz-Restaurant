@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "../context/BookingContext";
 import { toast } from "react-hot-toast";
@@ -14,7 +14,7 @@ const VerifyOtp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/bookings/verify-otp", {
+      const res = await axios.post("/bookings/verify-otp", {
         email: bookingData.email,
         otp,
       });

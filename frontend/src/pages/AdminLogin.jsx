@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -16,9 +16,9 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/admin/login", form);
+      const res = await axios.post("/admin/login", form);
       localStorage.setItem("adminToken", res.data.token);
-      toast.success("✅ Login successful!");
+      toast.success("Login successful!");
       navigate("/admin-dashboard");
     } catch (err) {
       toast.error("❌ Invalid credentials");

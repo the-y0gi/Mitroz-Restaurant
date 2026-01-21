@@ -1,7 +1,7 @@
 
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { CheckCircle, Loader2 } from "lucide-react";
@@ -14,7 +14,7 @@ const AdminEventRequests = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/events/admin/all", {
+      const res = await axios.get("/events/admin/all", {
         headers: {
           Authorization: localStorage.getItem("adminToken"),
         },
@@ -35,7 +35,7 @@ const AdminEventRequests = () => {
   const handleConfirm = async (id) => {
     setConfirmingId(id);
     try {
-      await axios.put(`http://localhost:4000/api/events/admin/confirm/${id}`, {}, {
+      await axios.put(`/events/admin/confirm/${id}`, {}, {
         headers: {
           Authorization: localStorage.getItem("adminToken"),
         },

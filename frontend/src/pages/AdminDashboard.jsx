@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { BarChart3, CalendarCheck, Wallet, UserCheck, PartyPopper, ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminHeader from "./AdminHeader";
@@ -14,7 +14,7 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("adminToken");
-        const res = await axios.get("http://localhost:4000/api/admin/dashboard/stats", {
+        const res = await axios.get("/admin/dashboard/stats", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

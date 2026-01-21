@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "../context/BookingContext";
-import axios from "axios";
+import axios from "../api/axios";
 import toast from "react-hot-toast";
 import {
   Cake, Gift, Mail, Phone, User, Music, CalendarClock,
@@ -76,8 +76,8 @@ const EventForm = () => {
     e.preventDefault();
     try {
       const payload = { ...form };
-      const res = await axios.post("http://localhost:4000/api/events/request", payload);
-      await axios.post("http://localhost:4000/api/bookings/send-otp", { email: form.email });
+      const res = await axios.post("/events/request", payload);
+      await axios.post("/bookings/send-otp", { email: form.email });
 
       setBookingData({
         ...form,

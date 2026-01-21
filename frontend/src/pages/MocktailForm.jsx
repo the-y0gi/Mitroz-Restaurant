@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axios";
 import { toast } from "react-toastify";
 import { useBooking } from "../context/BookingContext";
 import { 
@@ -54,10 +54,10 @@ const MocktailForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/bookings/create", form);
+      const res = await axios.post("/bookings/create", form);
       toast.success("Reservation request sent!");
       setBookingData({ ...form, price: res.data.calculatedAmount, bookingId: res.data.bookingId });
-      await axios.post("http://localhost:4000/api/bookings/send-otp", { email: form.email });
+      await axios.post("/bookings/send-otp", { email: form.email });
       navigate("/otp-verify");
     } catch (err) {
       console.error(err);

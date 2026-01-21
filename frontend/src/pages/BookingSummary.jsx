@@ -1,7 +1,7 @@
 import React from "react";
 import { useBooking } from "../context/BookingContext";
 import { toast } from "react-hot-toast";
-import axios from "axios";
+import axios from "../api/axios";
 import { 
   CheckCircle2, CalendarDays, Clock, Users, 
   PartyPopper, BadgeIndianRupee, ArrowRight, 
@@ -22,8 +22,8 @@ const BookingSummary = () => {
       const isEvent = bookingData.serviceType === "EVENT";
       const res = await axios.post(
         isEvent
-          ? "http://localhost:4000/api/events/payment/order"
-          : "http://localhost:4000/api/bookings/payment/order",
+          ? "/events/payment/order"
+          : "/bookings/payment/order",
         isEvent
           ? { eventId: bookingData.bookingId }
           : { bookingId: bookingData.bookingId }
@@ -46,8 +46,8 @@ const BookingSummary = () => {
           try {
             const verifyRes = await axios.post(
               isEvent
-                ? "http://localhost:4000/api/events/payment/verify"
-                : "http://localhost:4000/api/bookings/payment/verify",
+                ? "/events/payment/verify"
+                : "/bookings/payment/verify",
               isEvent
                 ? {
                     razorpay_order_id: response.razorpay_order_id,

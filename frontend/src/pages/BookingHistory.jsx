@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { 
   Calendar, Clock, User, Mail, Phone, Search, 
   MapPin, CheckCircle, AlertCircle, 
@@ -19,7 +19,7 @@ const BookingHistory = () => {
     try {
       setLoading(true);
       setSearched(true);
-      const res = await axios.get("http://localhost:4000/api/bookings/history", {
+      const res = await axios.get("/bookings/history", {
         params: { email },
       });
 
@@ -43,7 +43,7 @@ const BookingHistory = () => {
 
   const handleProfileUpdate = async () => {
     try {
-      await axios.put("http://localhost:4000/api/booking/user-update", profile);
+      await axios.put("/booking/user-update", profile);
       setIsEditing(false);
       alert("✅ Profile updated successfully!");
     } catch (err) {
