@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
   MapPin, Phone, Mail, Instagram, Facebook, Twitter, 
-  ArrowRight, ChevronDown, Star, UtensilsCrossed, Calendar
+  ArrowRight, ChevronDown, Star, UtensilsCrossed, Calendar,
+  Heart
 } from "lucide-react";
 
 import TestimonialsSection from "../components/TestimonialsSection";
@@ -171,71 +172,88 @@ const MitrozHomepage = () => {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <footer className="bg-[#050505] text-white pt-24 pb-12 border-t border-white/5 relative overflow-hidden">
-        {/* Footer Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+<footer className="bg-[#050505] text-white pt-24 pb-12 border-t border-white/5 relative overflow-hidden">
+  {/* Footer Glow */}
+  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
-            
-            {/* Brand */}
-            <div className="md:col-span-5 space-y-6">
-              <h2 className="text-5xl font-bold tracking-tighter text-white">Mitroz.</h2>
-              <p className="text-gray-400 leading-relaxed max-w-sm">
-                Crafting unforgettable moments through exquisite flavors and premium hospitality. 
-                Join us for a dining experience that transcends the ordinary.
-              </p>
-              <div className="flex gap-4 pt-4">
-                {[Instagram, Facebook, Twitter].map((Icon, i) => (
-                  <a key={i} href="#" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 hover:-translate-y-1">
-                    <Icon size={20} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Links */}
-            <div className="md:col-span-2 md:col-start-7">
-              <h4 className="text-lg font-bold mb-6">Discover</h4>
-              <ul className="space-y-4 text-gray-400">
-                {['Reservations', 'Menu', 'Private Events', 'Gallery', 'Careers'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-orange-400 transition-colors inline-block hover:translate-x-2 duration-300">{item}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div className="md:col-span-3">
-              <h4 className="text-lg font-bold mb-6">Contact</h4>
-              <ul className="space-y-4 text-gray-400">
-                <li className="flex gap-3">
-                  <MapPin className="text-orange-500 shrink-0" />
-                  <span>Galaxy Tower, Vijay Nagar,<br/>Indore, MP</span>
-                </li>
-                <li className="flex gap-3">
-                  <Phone className="text-orange-500 shrink-0" />
-                  <span>+91 98765 43210</span>
-                </li>
-                <li className="flex gap-3">
-                  <Mail className="text-orange-500 shrink-0" />
-                  <span>bookings@mitroz.com</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-            <p>&copy; 2025 Mitroz. All rights reserved.</p>
-            <div className="flex gap-8 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Sitemap</a>
-            </div>
-          </div>
+  <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
+      
+      {/* Brand */}
+      <div className="md:col-span-5 space-y-6">
+        <h2 className="text-5xl font-bold tracking-tighter text-white">Mitroz.</h2>
+        <p className="text-gray-400 leading-relaxed max-w-sm">
+          Crafting unforgettable moments through exquisite flavors and premium hospitality. 
+          Join us for a dining experience that transcends the ordinary.
+        </p>
+        <div className="flex gap-4 pt-4">
+          {[Instagram, Facebook, Twitter].map((Icon, i) => (
+            <a key={i} href="#" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 hover:-translate-y-1">
+              <Icon size={20} />
+            </a>
+          ))}
         </div>
-      </footer>
+      </div>
+
+      {/* Links */}
+      <div className="md:col-span-2 md:col-start-7">
+        <h4 className="text-lg font-bold mb-6">Discover</h4>
+        <ul className="space-y-4 text-gray-400">
+          {['Reservations', 'Menu', 'Private Events', 'Gallery'].map((item) => (
+            <li key={item}>
+              <a href="#" className="hover:text-orange-400 transition-colors inline-block hover:translate-x-2 duration-300">{item}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Contact */}
+      <div className="md:col-span-3">
+        <h4 className="text-lg font-bold mb-6">Contact</h4>
+        <ul className="space-y-4 text-gray-400">
+          <li className="flex gap-3">
+            <MapPin className="text-orange-500 shrink-0" />
+            <span>Galaxy Tower, Vijay Nagar,<br/>Indore, MP</span>
+          </li>
+          <li className="flex gap-3">
+            <Phone className="text-orange-500 shrink-0" />
+            <span>+91 98765 43210</span>
+          </li>
+          <li className="flex gap-3">
+            <Mail className="text-orange-500 shrink-0" />
+            <span>bookings@mitroz.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    {/* Bottom Bar */}
+    <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
+      
+      {/* Copyright */}
+      <p>&copy; 2026 Mitroz. All rights reserved.</p>
+
+      {/* 🔥 Developer Credit (Added Here) */}
+      <p className="flex items-center gap-1">
+        Made with <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" /> by 
+        <a 
+          href="https://yogesh-gadhewal.vercel.app" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-white font-medium hover:text-orange-400 transition-colors ml-1"
+        >
+          Yogesh Gadhewal.
+        </a>
+      </p>
+
+      {/* Policy Links */}
+      <div className="flex gap-6">
+        <a href="#" className="hover:text-white transition-colors">Privacy</a>
+        <a href="#" className="hover:text-white transition-colors">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
       {/* ================= FLOATING ACTION BUTTON (Mobile) ================= */}
       <div className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ${
