@@ -5,12 +5,6 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 
-
-// import authRoutes from "./routes/auth.routes.js";
-// import userRoutes from "./routes/user.routes.js";
-
-// import restaurantRoutes from "./routes/restaurant.routes.js";
-
 import bookingRoutes from "./routes/booking.routes.js";
 import eventRoutes from "./routes/event.routes.js";
 import adminRoutes from "./routes/admin.routes.js";

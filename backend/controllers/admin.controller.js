@@ -6,7 +6,7 @@ import Booking from "../models/booking.js";
 
 
 
-// ✅ Admin Creator Function
+// Admin Creator Function
 export const createAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -31,24 +31,24 @@ export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 🔍 Check admin by email
+    // Check admin by email
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // 🔑 Compare password
+    // Compare password
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // ✅ JWT token generate here
+    // JWT token generate here
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    // 📨 Return token to frontend
+    // Return token to frontend
     res.json({ message: "Login successful", token });
   } catch (error) {
     res.status(500).json({ error: "Login failed" });
@@ -78,7 +78,7 @@ export const getDashboardStats = async (req, res) => {
 
     const totalEarnings = dineoutEarnings + eventEarnings;
 
-    // 🔍 Upcoming DINEOUT/MOCKTAIL bookings (not events)
+    // Upcoming DINEOUT/MOCKTAIL bookings (not events)
     const upcomingBookings = await Booking.find({
       date: { $gte: new Date() }
     })
@@ -101,75 +101,3 @@ export const getDashboardStats = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch dashboard stats" });
   }
 };
-
-
-// export const getDashboardStats = async (req, res) => {
-//   try {
-//     const totalBookings = await Booking.countDocuments();
-//     const totalPaid = await Booking.countDocuments({ isPaid: true });
-
-//     const totalEarningsResult = await Booking.aggregate([
-//       { $match: { isPaid: true } },
-//       { $group: { _id: null, total: { $sum: "$price" } } }
-//     ]);
-
-//     const totalEarnings = totalEarningsResult[0]?.total || 0;
-
-//     const upcomingBookings = await Booking.find({
-//       date: { $gte: new Date() }
-//     }).sort({ date: 1 }).limit(5).populate("user");
-
-//     const totalEvents = await EventRequest.countDocuments();
-
-//     res.json({
-//       totalBookings,
-//       totalPaid,
-//       totalEarnings,
-//       upcomingBookings,
-//       totalEvents
-//     });
-//   } catch (error) {
-//     console.error("❌ Error in dashboard stats:", error);
-//     res.status(500).json({ error: "Failed to fetch dashboard stats" });
-//   }
-// };
-
-
-
-
-// export const getDashboardStats = async (req, res) => {
-//   try {
-//     const totalBookings = await Booking.countDocuments();
-//     const totalPaid = await Booking.countDocuments({ isPaid: true });
-
-//     const totalEarningsResult = await Booking.aggregate([
-//       { $match: { isPaid: true } },
-//       { $group: { _id: null, total: { $sum: "$price" } } }
-//     ]);
-
-//     const totalEarnings = totalEarningsResult[0]?.total || 0;
-
-//     // ⏩ Populate user and select key fields
-//     const upcomingBookings = await Booking.find({
-//       date: { $gte: new Date() }
-//     })
-//       .sort({ date: 1 })
-//       .limit(5)
-//       .populate("user", "name email")
-//       .select("user serviceType date time price calculationNote isPaid");
-
-//     const totalEvents = await EventRequest.countDocuments();
-
-//     res.json({
-//       totalBookings,
-//       totalPaid,
-//       totalEarnings,
-//       totalEvents,
-//       upcomingBookings
-//     });
-//   } catch (error) {
-//     console.error("❌ Error in dashboard stats:", error);
-//     res.status(500).json({ error: "Failed to fetch dashboard stats" });
-//   }
-// };
-

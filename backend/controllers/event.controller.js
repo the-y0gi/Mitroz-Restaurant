@@ -4,138 +4,7 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import razorpay from "../utils/razorpay.js";
 
-// 📌 User: Submit new event request
-// export const submitEventRequest = async (req, res) => {
-//   try {
-//     const {
-//       name,
-//       email,
-//       phone,
-//       eventType,
-//       noOfGuests,
-//       addOns,
-//       preferredDate,
-//       preferredTime,
-//       message,
-//     } = req.body;
-
-//     const newEvent = await EventRequest.create({
-//       name,
-//       email,
-//       phone,
-//       eventType,
-//       noOfGuests,
-//       addOns,
-//       preferredDate,
-//       preferredTime,
-//       message,
-//     });
-
-//     // Send acknowledgment email
-//     await sendEmail({
-//       to: email,
-//       subject: "Event Request Received",
-//       text: `Hi ${name},\n\nWe've received your request for a ${eventType} event on ${preferredDate} at ${preferredTime}. Our team will contact you soon.\n\nThank you!`,
-//     });
-
-   
-
-//     res.status(201).json({ message: "Event request submitted successfully" });
-//   } catch (error) {
-//     res.status(500).json({ error: "Failed to submit event request" });
-//   }
-// };
-
-// export const submitEventRequest = async (req, res) => {
-//   try {
-//     const {
-//       name,
-//       email,
-//       phone,
-//       eventType,
-//       noOfGuests,
-//       addOns,
-//       preferredDate,
-//       preferredTime,
-//       message,
-//     } = req.body;
-
-//     const newEvent = await EventRequest.create({
-//       name,
-//       email,
-//       phone,
-//       eventType,
-//       noOfGuests,
-//       addOns,
-//       preferredDate,
-//       preferredTime,
-//       message,
-//     });
-
-//     // Send acknowledgment email
-//     await sendEmail({
-//       to: email,
-//       subject: "Event Request Received",
-//       text: `Hi ${name},\n\nWe've received your request for a ${eventType} event on ${preferredDate} at ${preferredTime}. Our team will contact you soon.\n\nThank you!`,
-//     });
-
-//     // ✅ Return price and ID for frontend
-//     res.status(201).json({
-//       message: "Event request submitted successfully",
-//       bookingId: newEvent._id,
-//       calculatedAmount: newEvent.estimatedPrice,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ error: "Failed to submit event request" });
-//   }
-// };
-
-// export const submitEventRequest = async (req, res) => {
-//   try {
-//     const {
-//       name,
-//       email,
-//       phone,
-//       eventType,
-//       noOfGuests,
-//       addOns,
-//       preferredDate,
-//       preferredTime,
-//       message,
-//     } = req.body;
-
-//     const newEvent = await EventRequest.create({
-//       name,
-//       email,
-//       phone,
-//       eventType,
-//       noOfGuests,
-//       addOns,
-//       preferredDate,
-//       preferredTime,
-//       message,
-//     });
-
-//     // Send acknowledgment email
-//     await sendEmail({
-//       to: email,
-//       subject: "Event Request Received",
-//       text: `Hi ${name},\n\nWe've received your request for a ${eventType} event on ${preferredDate} at ${preferredTime}. Our team will contact you soon.\n\nThank you!`,
-//     });
-
-//     // ✅ Respond with necessary fields
-//     res.status(201).json({
-//       message: "Event request submitted successfully",
-//       bookingId: newEvent._id,
-//       calculatedAmount: newEvent.estimatedPrice,  // ✅ from schema
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Failed to submit event request" });
-//   }
-// };
-
-// 📌 User: Submit new event request
+//  User: Submit new event request
 export const submitEventRequest = async (req, res) => {
   try {
     const {
@@ -168,7 +37,7 @@ export const submitEventRequest = async (req, res) => {
       text: `Hi ${name},\n\nWe've received your request for a ${eventType} event on ${preferredDate} at ${preferredTime}. Our team will contact you soon.\n\nThank you!`,
     });
 
-    // ✅ FIX: send event ID and price back to frontend
+    // FIX: send event ID and price back to frontend
     res.status(201).json({
       message: "Event request submitted successfully",
       bookingId: newEvent._id,
@@ -207,7 +76,6 @@ export const createEventPaymentOrder = async (req, res) => {
 
 export const verifyEventPayment = async (req, res) => {
   try {
-        console.log("🪵 Incoming Verify Payload:", req.body);  // 👈 Add this
 
     const {
       razorpay_order_id,
@@ -217,7 +85,7 @@ export const verifyEventPayment = async (req, res) => {
     } = req.body;
 
     if (!eventId) {
-      return res.status(400).json({ error: "Missing eventId in request" });  // 👈 Clear error msg
+      return res.status(400).json({ error: "Missing eventId in request" });
     }
 
     const expectedSignature = crypto
@@ -238,19 +106,14 @@ export const verifyEventPayment = async (req, res) => {
     event.paymentId = razorpay_payment_id;
     await event.save();
 
-    // // 🔁 For test only
-    // event.isPaid = true;
-    // event.paymentId = "TEST_FAKE_PAYMENT_ID";
-    // await event.save();
-
-    res.json({ success: true, message: "Event payment verified ✅" });
+    res.json({ success: true, message: "Event payment verified " });
   } catch (error) {
     console.error("❌ Error verifying event payment:", error);
     res.status(500).json({ error: "Payment verification failed" });
   }
 };
 
-// 📌 Admin: Get all event requests
+// Admin: Get all event requests
 export const getAllEventRequests = async (req, res) => {
   try {
     const events = await EventRequest.find().sort({ createdAt: -1 });
@@ -260,7 +123,7 @@ export const getAllEventRequests = async (req, res) => {
   }
 };
 
-// 📌 Admin: Confirm event request
+//  Admin: Confirm event request
 export const confirmEvent = async (req, res) => {
   try {
     const eventId = req.params.id;
@@ -289,25 +152,3 @@ export const confirmEvent = async (req, res) => {
     res.status(500).json({ error: "Failed to confirm event" });
   }
 };
-
-
-// //fake verify
-// export const verifyEventPayment = async (req, res) => {
-//   try {
-//     const { eventId } = req.body;
-
-//     const event = await EventRequest.findById(eventId);
-//     if (!event) {
-//       return res.status(404).json({ error: "Event not found" });
-//     }
-
-//     event.isPaid = true;
-//     event.paymentId = "TEST_FAKE_PAYMENT_ID";
-//     await event.save();
-
-//     res.json({ success: true, message: "Fake test payment verified ✅" });
-//   } catch (error) {
-//     console.error("❌ Error verifying event payment:", error);
-//     res.status(500).json({ error: "Test payment failed" });
-//   }
-// };

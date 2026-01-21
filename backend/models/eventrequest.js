@@ -28,7 +28,7 @@ const eventRequestSchema = new mongoose.Schema({
     default: '',
   },
 
-  // ✅ New fields below 👇
+  // New fields below
   estimatedPrice: {
     type: Number,
     default: 5000, // default advance
