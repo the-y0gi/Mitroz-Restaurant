@@ -55,7 +55,7 @@ const MocktailForm = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:4000/api/bookings/create", form);
-      toast.success("✅ Reservation request sent!");
+      toast.success("Reservation request sent!");
       setBookingData({ ...form, price: res.data.calculatedAmount, bookingId: res.data.bookingId });
       await axios.post("http://localhost:4000/api/bookings/send-otp", { email: form.email });
       navigate("/otp-verify");
@@ -68,7 +68,7 @@ const MocktailForm = () => {
   const isFormValid = form.name && form.email && form.phone && form.spaceType && form.date && form.time;
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-24 md:pb-10 pt-4 md:pt-10 px-4 md:px-8 font-sans">
+    <div className="min-h-screen bg-[#F8F9FA] pb-24 md:pb-10 pt-4 md:pt-10 px-4 md:px-8 font-sans -mt-5">
       
       {/* Header (Desktop) */}
       <div className="max-w-6xl mx-auto mb-8 hidden md:block">

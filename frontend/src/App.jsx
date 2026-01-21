@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useLayoutEffect, useState } from "react";
+import MenuPage from "./pages/MenuPage";
 
 // Wrap in a component to access location
 const AppLayout = () => {
@@ -33,6 +34,7 @@ const AppLayout = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/menu" element={<MenuPage />} />
         <Route path="/dineout" element={<DineoutForm />} />
         <Route path="/mocktail" element={<MocktailForm />} />
         <Route path="/event" element={<EventForm />} />
