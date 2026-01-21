@@ -76,13 +76,13 @@ const BookByOccasion = () => {
           <div className="flex gap-2">
             <button
               onClick={() => scroll("left")}
-              className="p-2.5 rounded-full border border-gray-200 hover:bg-black hover:text-white hover:border-black transition-all active:scale-95"
+              className="p-2.5 rounded-full border border-gray-200 text-black hover:bg-black hover:text-white hover:border-black transition-all active:scale-95"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="p-2.5 rounded-full border border-gray-200 hover:bg-black hover:text-white hover:border-black transition-all active:scale-95"
+              className="p-2.5 rounded-full border border-gray-200 text-black hover:bg-black hover:text-white hover:border-black transition-all active:scale-95"
             >
               <ChevronRight size={20} />
             </button>
