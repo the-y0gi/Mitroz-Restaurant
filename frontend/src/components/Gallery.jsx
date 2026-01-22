@@ -15,6 +15,7 @@ const galleryImages = [
   { id: 1, src: img1, alt: "Dining Area" },
   { id: 2, src: img6, alt: "Event Night" },
   { id: 3, src: img3, alt: "Hookah Lounge" },
+  { id: 4, src: img4, alt: "Party Area" },
 
   { id: 5, src: img7, alt: "Terrace Vibes" },
   { id: 6, src: img5, alt: "Mocktail Bar" },
