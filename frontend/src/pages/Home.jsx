@@ -196,7 +196,7 @@ const MitrozHomepage = () => {
       </div>
 
       {/* Links */}
-      <div className="md:col-span-2 md:col-start-7">
+      {/* <div className="md:col-span-2 md:col-start-7">
         <h4 className="text-lg font-bold mb-6">Discover</h4>
         <ul className="space-y-4 text-gray-400">
           {['Reservations', 'Menu', 'Private Events', 'Gallery'].map((item) => (
@@ -205,7 +205,31 @@ const MitrozHomepage = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
+
+      {/* Links */}
+<div className="md:col-span-2 md:col-start-7">
+  <h4 className="text-lg font-bold mb-6">Discover</h4>
+
+  <ul className="space-y-4 text-gray-400">
+    {[
+      { label: "Experiences", href: "/#experiences" },
+      { label: "Menu", href: "/menu" },
+      { label: "Private Events", href: "/event" },
+      { label: "Gallery", href: "/#gallery" },
+    ].map((item) => (
+      <li key={item.label}>
+        <a
+          href={item.href}
+          className="inline-block transition-all duration-300 hover:text-orange-400 hover:translate-x-2"
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
 
       {/* Contact */}
       <div className="md:col-span-3">
