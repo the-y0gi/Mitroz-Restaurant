@@ -37,7 +37,7 @@ export const submitEventRequest = async (req, res) => {
       text: `Hi ${name},\n\nWe've received your request for a ${eventType} event on ${preferredDate} at ${preferredTime}. Our team will contact you soon.\n\nThank you!`,
     });
 
-    // FIX: send event ID and price back to frontend
+    //send event ID and price back to frontend
     res.status(201).json({
       message: "Event request submitted successfully",
       bookingId: newEvent._id,
